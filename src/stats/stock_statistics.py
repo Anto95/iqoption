@@ -38,7 +38,7 @@ class Stock:
         return time_series
 
     def get_60_days_data(self):
-        data = self.get_data(data_period="60d", data_interval="2m")
+        data = self.get_data(data_period="43d", data_interval="2m")
         time_series = data["Open"]
         time_series = time_series.dropna(how='all')
         return time_series
@@ -168,7 +168,7 @@ def get_all_stocks_statistics():
         stock_stats_df = get_stock_statistics_df(stock_ticker)
         if(stock_stats_df.any().any()):
             stocks_stats[stock_ticker] = stock_stats_df
-            stock_stats_df.to_csv("../../stock_statistics/" + stock_ticker + ".csv")
+            stock_stats_df.to_csv("../resources/stock_statistics/" + stock_ticker + ".csv")
 
 
 get_all_stocks_statistics()
