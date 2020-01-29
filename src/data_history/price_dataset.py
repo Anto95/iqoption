@@ -3,7 +3,7 @@ import pandas as pd
 import os
 import sys
 import datetime
-home_dir = "//"
+home_dir = "../resources"
 price_dataset_path = os.path.join(home_dir,"price_dataset")
 min_date = "2020-01-01"
 
@@ -59,27 +59,6 @@ for ticker in iqoption_tickers:
 		appendData(data, old_data, old_data_path)
 
 
-		# Date format: yyyy-mm-dd
-ticker = "EBAY"
-today = get_today()
-end_date = (today + datetime.timedelta(days=1)).strftime('%Y-%m-%d') # Tomorrow
-data = get_data(data_interval = "2m", data_start = today-datetime.timedelta(days = 55), data_end = end_date, ticker = ticker)
-data = data.Open.values[1:]
-for i in range(1,10):
-	buy = 0 
-	count = 0
-	fail_count = 0
-	gain = i
-	factor = (1 +((gain + 1)/500))
-	for point in data:
-		if(buy != 0 and (point > (buy * factor))):
-			count += 1
-			buy = point
-		elif(buy == 0):
-			buy = point
-		if(point < buy * 0.9):
-			fail_count += 1
-	win_factor = pow(1 + (gain/100),count)
-	print("gain: ", gain, "count: ", count, "win_factor: ", win_factor, "Fails: ", fail_count)
+
 
 
