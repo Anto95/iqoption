@@ -2,6 +2,10 @@ import pandas as pd
 import os
 import sys
 
+# Merge invest_safely and win_ratio strategies to get investments that
+# haven't been losing for a specified time(safe_degree), and sort them
+# by the max gain they would have brought in the last two months.
+
 def read_stock_statistics():
     stocks_stats = {}
     stock_stats_path = "../resources/stock_statistics"
