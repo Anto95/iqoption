@@ -5,9 +5,10 @@ import numpy as np
 
 def read_stats():
     stocks_stats = {}
-    for file in os.listdir("../resources/stock_statistics"):
+    stock_stats_path = "../resources/stock_statistics"
+    for file in os.listdir(stock_stats_path):
         stock_ticker = file[:-4]
-        stock_stats_df = pd.read_csv(os.path.join("../resources/stock_statistics", file), index_col = 0)
+        stock_stats_df = pd.read_csv(os.path.join(stock_stats_path, file), index_col = 0)
         stocks_stats[stock_ticker] = stock_stats_df
     return stocks_stats
 
