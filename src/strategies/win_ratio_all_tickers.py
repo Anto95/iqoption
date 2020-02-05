@@ -52,15 +52,19 @@ def get_today():
 
 
 
-def get_strategy_data():
+def get_strategy_data(old = False):
 	strategy = {}
 	for ticker in iqoption_tickers:
-		file_path = os.path.join("../resources/win_ratio_all_tickers", ticker) + ".csv"
-		if(os.path.isfile(file_path)):
-			os.remove(file_path)
 		today = get_today()
 		end_date = (today + datetime.timedelta(days=1)).strftime('%Y-%m-%d') # Tomorrow
-		data = get_data(data_interval = "2m", data_start = today-datetime.timedelta(days = 55), data_end = end_date, ticker = ticker)
+		if (not old):
+			data = get_data(data_interval = "2m", data_start = today-datetime.timedelta(days = 55), data_end = end_date, ticker = ticker)
+			file_path = os.path.join("../resources/win_ratio_all_tickers", ticker) + ".csv"
+		else:
+			data = get_data(data_interval = "60m", data_start = today-datetime.timedelta(days = 180), data_end = end_date, ticker = ticker)
+			file_path = os.path.join("../resources/win_ratio_all_tickers_old", ticker) + ".csv"
+		if(os.path.isfile(file_path)):
+			os.remove(file_path)
 		data = data.Open.values[1:]
 		stats = []
 		for i in range(1,50):
@@ -84,18 +88,27 @@ def get_strategy_data():
 		strategy[ticker] = stats_df
 	return strategy
 
+def update_win_ratio(old):
+	strategy = get_strategy_data(old)
+	max_inv = 0
+	max_ticker = None
+	stats = []
+	for ticker in strategy.keys():
+		df = strategy[ticker]
+		if(max(df.fail_count) == 0):
+			max_earn = max(df.win_factor)
+			stats.append([ticker,max_earn])
 
-strategy = get_strategy_data()
-max_inv = 0
-max_ticker = None
-stats = []
-for ticker in strategy.keys():
-	df = strategy[ticker]
-	if(max(df.fail_count) == 0):
-		max_earn = max(df.win_factor)
-		stats.append([ticker,max_earn])
 
+	stats.sort(key = lambda x: x[1], reverse=True)
+	stats = pd.DataFrame(stats, columns = ["ticker","best_gain"])
+	if (not old):
+		stats.to_csv(os.path.join("../resources/win_ratio_all_tickers", "A_best_gain") + ".csv")
+	else:
+		stats.to_csv(os.path.join("../resources/win_ratio_all_tickers_old", "A_best_gain") + ".csv")
 
-stats.sort(key = lambda x: x[1], reverse=True)
-stats = pd.DataFrame(stats, columns = ["ticker","best_gain"])
-stats.to_csv(os.path.join("../resources/win_ratio_all_tickers", "A_best_gain") + ".csv")
+if len(sys.argv) == 2:
+	old = True
+else:
+	old = False
+update_win_ratio(old)

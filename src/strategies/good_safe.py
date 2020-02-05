@@ -15,12 +15,15 @@ def read_stock_statistics():
         stocks_stats[stock_ticker] = stock_stats_df
     return stocks_stats
 
-def read_win_ratio_all_tickers():
-	win_ratio_all_tickers_path = "../resources/win_ratio_all_tickers/A_best_gain.csv"
+def read_win_ratio_all_tickers(old):
+	if(not old):
+		win_ratio_all_tickers_path = "../resources/win_ratio_all_tickers/A_best_gain.csv"
+	else:
+		win_ratio_all_tickers_path = "../resources/win_ratio_all_tickers_old/A_best_gain.csv"
 	win_ratio_all_tickers = pd.read_csv(win_ratio_all_tickers_path, index_col = 0)
 	return win_ratio_all_tickers
 
-def get_good_safe(safe_degree = 20):
+def get_good_safe(safe_degree = 20, old = False):
 	#Safe_degree set to these values means that this ticker is growing(falling) since:
 	# >= 22 -> two years
 	# >= 21 -> one year
@@ -35,13 +38,21 @@ def get_good_safe(safe_degree = 20):
 			safe.append(ticker)
 		#if((sum(stock.loc["upper_10"] == 0)*1) >= safe_degree):
 			#safe.append(ticker)
-	good = read_win_ratio_all_tickers()
+	good = read_win_ratio_all_tickers(old)
 	good_safe = good[good.ticker.isin(safe)]
 	return good_safe
 
-if len(sys.argv) == 2:
+
+if len(sys.argv) == 3:
+	old = True
 	safe_degree = int(sys.argv[1])
+
+elif(len(sys.argv) == 2):
+		safe_degree = int(sys.argv[1])
+		old = False
 else:
 	safe_degree = 20
-good_safe = get_good_safe(safe_degree)
+	old = False
+
+good_safe = get_good_safe(safe_degree, old)
 print(good_safe)
