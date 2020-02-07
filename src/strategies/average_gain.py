@@ -5,6 +5,7 @@ import yfinance as yf
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def get_data(data_period="1mo", data_interval="60m", ticker = "AAPL"):
         data = yf.download(  # or pdr.get_data_yahoo(...
             # tickers list or string as well
@@ -24,6 +25,8 @@ def compute_stats_time_to_gain(ticker, gain, time_window):
 			if value >= expected:
 				time_needed.append((i-cnt)/8)
 				break
+	if (time_needed == []):
+		return 99,99,99,99,99,0,time_needed
 	avgt=np.mean(time_needed)
 	maxt=np.max(time_needed)
 	mint=np.min(time_needed)
@@ -38,6 +41,8 @@ def compute_stats_time_to_gain(ticker, gain, time_window):
 				if value >= expected:
 					time_needed.append((i-cnt)/8)
 					break
+	if (time_needed == []):
+		return 99,99,99,99,99,0,time_needed
 	success=float(len(time_needed))/float(len(data) - maxt*8)
 	avgt=np.mean(time_needed)
 	maxt=np.max(time_needed)
@@ -63,9 +68,12 @@ def get_tickers_comparison(tickers, gain, time_windows):
 	df = pd.DataFrame(to_df, columns = ["ticker","time_window","average","max","min","std","quantile_80","success"])
 	return df
 
+
+safe_tickers = "INTC AAPL CRM CTXS MSFT DHI AMZN LMT ANSS DHR NEE NVDA ETR GOOGL KO DRE FE RTN FISV ED MDT BMY ABT COST ATVI NKE DOV HON GILD EMR JPM AGN BAC PG HSBC VZ PST EZJ WMT".split()
 tickers = ["ATVI", "ETR", "BMY" , "MDT", "AAPL", "DHR", "NVDA", "MSFT"]
+tickers = safe_tickers
 gain = 0.04
-time_windows = ["6mo"]
+time_windows = ["5d","10d","15d","20d"]
 df = get_tickers_comparison(tickers, gain, time_windows)
 print(df.groupby('ticker').mean().sort_values( by = ["max","quantile_80","average"]))
 

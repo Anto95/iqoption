@@ -7,6 +7,10 @@ home_dir = "../resources"
 price_dataset_path = os.path.join(home_dir,"price_dataset")
 min_date = "2020-01-01"
 
+
+# Keep saved a dataset with the prices evolution of all the tickets with a 2 min granularity.
+# Do not run when the stock exchange is opened otherwise you will loose a part of data
+
 def get_data(data_interval=None, data_start = None, data_end = None, ticker = None):
         data = yf.download(  # or pdr.get_data_yahoo(...
             # tickers list or string as well
@@ -28,7 +32,7 @@ def read_history(ticker):
 	old_data_path = os.path.join(price_dataset_path, (ticker + ".csv"))
 	if os.path.isfile(old_data_path):
 		old_data = pd.read_csv(old_data_path, index_col = 0, header = None, names = [0])
-		start_date = old_data.index[-1][:10]
+		start_date = (datetime.date(*map(int, old_data.index[-1][:10].split('-'))) + datetime.timedelta(days = 1)).strftime("%Y-%m-%d")
 	else:
 		start_date = min_date
 		old_data = None
@@ -47,16 +51,21 @@ def get_today():
 	today = (datetime.datetime.today())
 	return today
 
+def update_price_dataset():
+	print("Updating pricing dataset...")
+	today = get_today()
+	for ticker in iqoption_tickers:
+		start_date, old_data, old_data_path = read_history(ticker)
+		if(start_date != today.strftime('%Y-%m-%d')):
+			end_date = (today).strftime('%Y-%m-%d') # Tomorrow
+			print("Getting data for " + ticker + " from " + start_date + " to " + end_date + "...")
+			data = get_data(data_interval = "2m", data_start = start_date, data_end = end_date, ticker = ticker)
+			data = data["Open"].dropna(how='all')
+			appendData(data, old_data, old_data_path)
 # Date format: yyyy-mm-dd
-today = get_today()
-for ticker in iqoption_tickers:
-	start_date, old_data, old_data_path = read_history(ticker)
-	if(start_date != today.strftime('%Y-%m-%d')):
-		end_date = (today + datetime.timedelta(days=1)).strftime('%Y-%m-%d') # Tomorrow
-		print("Getting data for " + ticker + " from " + start_date + " to " + end_date + "...")
-		data = get_data(data_interval = "2m", data_start = start_date, data_end = end_date, ticker = ticker)
-		data = data["Open"].dropna(how='all')
-		appendData(data, old_data, old_data_path)
+if __name__ == "__main__":
+	update_price_dataset()
+
 
 
 
