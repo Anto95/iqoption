@@ -20,10 +20,22 @@ class EmptyResponse(Exception):
     pass
 
 
+def get_period(interval):
+    end = datetime.now()
+    limits = {"1m": 8, "2m": 60, "5m": 60, "15m": 60, "30m": 60, "60m": 60, "90m": 60, "1h": 730}
+    if interval in limits:
+        start = end - timedelta(days=limits[interval] - 1)
+    else:
+        start = datetime(1970, 1, 1, 0, 0, 0)
+    return end.strftime("%Y-%m-%d %H:%M:%S"), start.strftime("%Y-%m-%d %H:%M:%S")
+
+
 def get_data(data_interval=None, tickers=None):
+    start, end = get_period(data_interval)
     data = yf.download(
         tickers=tickers,
-        period="max",
+        start=start,
+        end=end,
         interval=data_interval,
         group_by='ticker',
         actions=True
