@@ -1,4 +1,4 @@
-*resources
-*src/resources
+*.csv
 *.idea
 *__pycache__
+.env*
