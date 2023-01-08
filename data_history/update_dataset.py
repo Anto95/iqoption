@@ -40,6 +40,7 @@ def get_data(data_interval=None, tickers=None):
         group_by='ticker',
         actions=True
     ).stack(0).reset_index()
+    print()
     if data.empty:
         logger.info("Terminating as empty dataframe retrieved.")
         raise EmptyResponse
@@ -97,7 +98,7 @@ def main():
     parser.add_argument("-t", "--tickers", required=True)
     parser.add_argument("-v", "--verbose", action="store_true")
     parser.add_argument("-i", "--interval", default="5m",
-                        choices=["1m", "2m", "5m", "15m", "30m", "60m", "90m", "1h", "1d", "5d", "1wk", "1mo", "3mo"])
+                        choices=["1m", "2m", "5m", "15m", "30m", "60m", "90m", "1h", "1d", "1wk", "1mo"])
     args = parser.parse_args()
     if args.verbose:
         logger.setLevel("DEBUG")

@@ -1,3 +1,4 @@
+import argparse
 import os
 import logging
 
@@ -14,10 +15,15 @@ Run update dataset for all tickers and for all intervals in conf/download_conf.p
 
 
 def main():
-    for i, interval in enumerate(intervals):
-        logger.info(f"Updating dataset for interval {interval} ({i}/{len(intervals)}).")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-t", "--tickers", default=tickers)
+    parser.add_argument("-i", "--intervals", nargs="+", default=intervals)
+    parser.add_argument("-v", "--verbose", action="store_true")
+    args = parser.parse_args()
+    for i, interval in enumerate(args.intervals):
+        logger.info(f"Updating dataset for interval {interval} ({i+1}/{len(intervals)}).")
         try:
-            update_price_dataset(tickers, interval)
+            update_price_dataset(args.tickers, interval)
         except EmptyResponse:
             pass
 
