@@ -15,7 +15,7 @@ Run update dataset for all tickers and for all intervals in conf/download_conf.p
 
 def main():
     for i, interval in enumerate(intervals):
-        logger.info(f"Updating dataset for interval {i}/{len(intervals)}.")
+        logger.info(f"Updating dataset for interval {interval} ({i}/{len(intervals)}).")
         try:
             update_price_dataset(tickers, interval)
         except EmptyResponse:
