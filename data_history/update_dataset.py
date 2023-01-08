@@ -27,7 +27,7 @@ def get_period(interval):
         start = end - timedelta(days=limits[interval] - 1)
     else:
         start = datetime(1970, 1, 1, 0, 0, 0)
-    return end.strftime("%Y-%m-%d %H:%M:%S"), start.strftime("%Y-%m-%d %H:%M:%S")
+    return start, end
 
 
 def get_data(data_interval=None, tickers=None):
