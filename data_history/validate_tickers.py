@@ -16,7 +16,7 @@ def main():
     logger.info(f"{len(tickers)} unique tickers.")
     data = yf.download(
         tickers=tickers,
-        period="1d",
+        period="1y",
         interval="1h",
         group_by='ticker'
     )
