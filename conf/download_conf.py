@@ -9,4 +9,4 @@ tickers = ["CAN", "AMD", "TSLA", "DVN", "WORK", "AMZN", "DO", "FFIV", "SNAP", "M
            "CSCO", "FRT", "FE", "ED", "CL", "ZM", "PG", "DIS", "DRI", "BA", "PST", "KHC", "DTE", "WMT", "CRON", "EMN",
            "ABT", "LYFT", "DLR", "BBY", "DFS", "TEF", "CTL", "MDT", "MO", "DBX", "BBVA", "GM", "CGC", "PINS", "TLRY",
            "GWPH", "ACB"]
-intervals = ["1m", "2m", "5m", "15m", "30m", "60m", "90m", "1h", "1d", "1wk", "1mo"]
+intervals = ["1m", "2m", "1h", "1d"]
