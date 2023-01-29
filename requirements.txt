@@ -2,3 +2,4 @@ pandas
 matplotlib
 yfinance
 pytrading212
+hyperopt
